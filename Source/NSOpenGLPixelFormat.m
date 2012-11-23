@@ -27,6 +27,7 @@
 */
 
 #import <Foundation/NSString.h>
+#import <Foundation/NSData.h>
 #import <Foundation/NSDebug.h>
 #import "AppKit/NSOpenGL.h"
 #import "GNUstepGUI/GSDisplayServer.h"
@@ -83,7 +84,7 @@
     return nil;
 }
 
-- (void)getValues:(long *)vals 
+- (void)getValues:(int *)vals
      forAttribute:(NSOpenGLPixelFormatAttribute)attrib 
  forVirtualScreen:(int)screen
 {
@@ -94,6 +95,26 @@
 {
   [self subclassResponsibility: _cmd];
   return nil;
+}
+
+- (id)initWithCoder: (NSCoder*)aCoder
+{
+  NSMutableData *attrs = [aCoder decodeObjectForKey: @"NSPixelAttributes"];
+  if (attrs == nil)
+    return nil;
+
+  // Ensure that it is zero-terminated
+  unsigned char tmp = 0;
+  [attrs appendBytes: &tmp length: sizeof(tmp)];
+
+  NSOpenGLPixelFormatAttribute *glattrs = [attrs mutableBytes];
+
+  return [self initWithAttributes: glattrs];
+}
+
+- (void) encodeWithCoder: (NSCoder*)aCoder
+{
+  [self subclassResponsibility: _cmd];
 }
 
 - (int)numberOfVirtualScreens

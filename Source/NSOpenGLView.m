@@ -256,7 +256,7 @@ static NSOpenGLPixelFormatAttribute attrs[] =
 {
   self = [super initWithCoder: aCoder];
 
-  // FIXME: Should set a pixel format like -init does
+  [self setPixelFormat: [aCoder decodeObjectForKey: @"NSPixelFormat"]];
   
   [[NSNotificationCenter defaultCenter] 
     addObserver: self
